@@ -130,8 +130,8 @@ http://localhost:1995/api/mcp
 | Option | Env Variable | Default | Description |
 |-------|--------------|---------|-------------|
 | `--http-auth-username` | `MCPD_HTTP_AUTH_USERNAME` | `` | Authentication username (defaults to `admin` if password is set) |
-| `--http-auth-password-file` | `MCPD_HTTP_AUTH_PASSWORD_FILE` | - | File containing SHA512 of password (allows runtime password changes) |
-| `--http-auth-password-sha512` | `MCPD_HTTP_AUTH_PASSWORD_SHA512` | - | SHA512 hash of password (static, cannot be changed via API) |
+| `--http-auth-password-file` | `MCPD_HTTP_AUTH_PASSWORD_FILE` | - | A file containing bcrypt(password: sha256(plain_password) of your user password |
+| `--http-auth-password-sha256-bcrypt` | `MCPD_HTTP_AUTH_PASSWORD_SHA256_BCRYPT` | - | A file containing bcrypt(password: sha256(plain_password) of your user password |
 | `--http-auth-captcha` | `MCPD_HTTP_AUTH_CAPTCHA` | `false` | Enable CAPTCHA for authentication |
 | `--http-auth-captcha-case-sensitive` | `MCPD_HTTP_AUTH_CAPTCHA_CASE_SENSITIVE` | `false` | Make CAPTCHA case-sensitive |
 | `--http-auth-api-token` | `MCPD_HTTP_AUTH_API_TOKEN` | - | Hardcoded bearer token that never expires |
