@@ -1001,46 +1001,17 @@ fn handle_request(request: &RequestWrapper, state: &mut HandlerState) -> HttpRes
 }
 
 fn redirect_root_to_index_html(cfg: &CommandLine) -> HttpResponseType {
-    if cfg.www_ui_enable {
+    if !cfg.www_ui_disable {
         response_redirect_301(format!("{}static/index.html", cfg.http_base_path))
     } else {
-        response_with_status_code(
-            response_text("<html><body>Service Unavailable!</body></html>"),
-            403,
-        )
+        response_with_status_code(response_text("Web UI is disabled"), 403)
     }
 }
 
 fn handle_static(_request: &RequestWrapper, cfg: &CommandLine, tail: &str) -> HttpResponseType {
-    // Try external static directory first
-    if cfg.www_ui_enable
-        && cfg
-            .www_static_directory
-            .as_ref()
-            .map(|d| d.is_dir())
-            .unwrap_or(false)
-    {
-        let file_path = cfg.www_static_directory.as_ref().unwrap().join(tail);
-        if file_path.exists() && file_path.is_file() {
-            if let Ok(data) = std::fs::read(&file_path) {
-                // Simple mime type detection
-                let mime_type = match file_path.extension().and_then(|e| e.to_str()) {
-                    Some("html") => "text/html",
-                    Some("css") => "text/css",
-                    Some("js") => "text/javascript",
-                    Some("json") => "application/json",
-                    Some("jpg") | Some("jpeg") => "image/jpeg",
-                    Some("png") => "image/png",
-                    Some("ico") => "image/x-icon",
-                    Some("ttf") => "font/ttf",
-                    _ => "application/octet-stream",
-                };
-                return response_from_data(mime_type, data);
-            }
-        }
+    if cfg.www_ui_disable {
+        return response_with_status_code(response_text("Web UI is disabled"), 403);
     }
-
-    // Fall back to internal static files
     if let Some((bytes, maybe_mime_type)) = www::handle_static(tail.to_string()) {
         let mime_type = maybe_mime_type.unwrap_or_else(|| "application/octet-stream".to_string());
         response_from_data(&mime_type, bytes)

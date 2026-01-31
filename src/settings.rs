@@ -42,15 +42,15 @@ pub struct CommandLine {
     /// Read timeout for client connections in seconds.
     ///
     /// If a client doesn't send data within this period, the connection will be dropped.
-    /// The default value is 30 seconds.
-    #[arg(long, default_value = "30", env = "MCPD_HTTP_READ_TIMEOUT")]
+    /// The default value is 5 seconds.
+    #[arg(long, default_value = "5", env = "MCPD_HTTP_READ_TIMEOUT")]
     pub http_read_timeout_secs: u64,
 
     /// Write timeout for client connections in seconds.
     ///
     /// If data cannot be written to a client within this period, the connection will be dropped.
-    /// The default value is 30 seconds.
-    #[arg(long, default_value = "30", env = "MCPD_HTTP_WRITE_TIMEOUT")]
+    /// The default value is 5 seconds.
+    #[arg(long, default_value = "5", env = "MCPD_HTTP_WRITE_TIMEOUT")]
     pub http_write_timeout_secs: u64,
 
     /// HTTP server basic authentication username.
@@ -132,20 +132,11 @@ pub struct CommandLine {
     #[arg(long)]
     pub quiet: bool,
 
-    /// Enable/Disable the web dashboard.
+    /// Disable the web dashboard.
     ///
-    /// Default is enabled (true).
-    #[arg(long, default_value = "true", env = "MCPD_WWW_UI_ENABLE")]
-    pub www_ui_enable: bool,
-
-    /// A directory to serve your own web files under `/static/*` HTTP path.
-    ///
-    /// Also you can override mcpd virtual files inside this folder.
-    /// mcpd virtual files are: index.html, index.js, login.html,
-    /// login.js, tools.html, mcp.js, mcpd-background-image.jpg,
-    /// favicon.ico, bootstrap.bundle.min.js, bootstrap.min.css, api.js, utils.js.
-    #[arg(long, env = "MCPD_WWW_STATIC_DIRECTORY", value_parser = parse_static_directory)]
-    pub www_static_directory: Option<PathBuf>,
+    /// Default is enabled (false).
+    #[arg(long, default_value = "false", env = "MCPD_WWW_UI_DISABLE")]
+    pub www_ui_disable: bool,
 
     /// Configuration key/values for www in KEY=VALUE format (can be specified multiple times).
     ///
@@ -238,17 +229,6 @@ fn parse_script_root_directory(s: &str) -> Result<PathBuf, String> {
             "Script root directory {:?} is not a directory",
             path
         ));
-    }
-    Ok(path)
-}
-
-fn parse_static_directory(s: &str) -> Result<PathBuf, String> {
-    let path = PathBuf::from(s);
-    if !path.exists() {
-        return Err(format!("Static directory {:?} does not exists", path));
-    }
-    if !path.is_dir() {
-        return Err(format!("Static directory {:?} is not a directory", path));
     }
     Ok(path)
 }

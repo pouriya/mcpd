@@ -122,8 +122,8 @@ http://localhost:1995/api/mcp
 | `--http-base-path` | `MCPD_HTTP_BASE_PATH` | `/` | HTTP server base path (currently not used) |
 | `--http-tls-cert-file` | `MCPD_HTTP_TLS_CERT_FILE` | - | TLS certificate file (enables HTTPS when used with `--http-tls-key-file`) |
 | `--http-tls-key-file` | `MCPD_HTTP_TLS_KEY_FILE` | - | TLS private key file (enables HTTPS when used with `--http-tls-cert-file`) |
-| `--http-read-timeout-secs` | `MCPD_HTTP_READ_TIMEOUT` | `30` | Read timeout for client connections in seconds |
-| `--http-write-timeout-secs` | `MCPD_HTTP_WRITE_TIMEOUT` | `30` | Write timeout for client connections in seconds |
+| `--http-read-timeout-secs` | `MCPD_HTTP_READ_TIMEOUT` | `5` | Read timeout for client connections in seconds |
+| `--http-write-timeout-secs` | `MCPD_HTTP_WRITE_TIMEOUT` | `5` | Write timeout for client connections in seconds |
 
 ### HTTP Authentication Options
 
@@ -148,8 +148,7 @@ http://localhost:1995/api/mcp
 
 | Option | Env Variable | Default | Description |
 |-------|--------------|---------|-------------|
-| `--www-ui-enable` | `MCPD_WWW_UI_ENABLE` | `true` | Enable/disable the web dashboard |
-| `--www-static-directory` | `MCPD_WWW_STATIC_DIRECTORY` | - | Directory to serve custom web files under `/static/*` (can override built-in files) |
+| `--www-ui-disable` | `MCPD_WWW_UI_DISABLE` | `false` | Disable the web dashboard |
 | `--www-config` | - | - | Configuration key/value pairs for web dashboard in `KEY=VALUE` format (accessible via `/api/public/configuration`) |
 
 ### Logging Options
