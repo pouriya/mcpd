@@ -107,12 +107,7 @@ pub fn check_input(command: &Command, input: &CommandInput) -> Result<CommandInp
     for (option, definition) in &command.info.as_ref().unwrap().options {
         let new_value = if new_input.options.contains_key(option.as_str()) {
             let input_value = new_input.options.get(option.as_str()).unwrap();
-            check_definition(
-                option,
-                &definition._type,
-                input_value,
-                &definition.size,
-            )?
+            check_definition(option, &definition._type, input_value, &definition.size)?
         } else if definition.default.is_none() {
             match definition._type {
                 CommandOptionInfoValueType::Boolean => CommandOptionValue::Bool(false),

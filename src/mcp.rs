@@ -357,7 +357,7 @@ fn json_to_command_options(arguments: &Value) -> HashMap<String, CommandOptionVa
 
 // === Request Handlers ===
 fn handle_initialize(_commands: &Command) -> JsonRpcResponse {
-    tracing::info!(msg="Client initialized");
+    tracing::info!(msg = "Client initialized");
     JsonRpcResponse::ok(
         Value::Null, // Will be replaced with actual id
         json!({
@@ -391,7 +391,7 @@ fn handle_tools_list(commands: &mut Command) -> JsonRpcResponse {
     // Pass root name to strip it from tool paths
     let root_name = &commands.name;
     let tools = commands_to_tools(commands, "", root_name);
-    tracing::info!(msg="Tools list returned", tools=tools.len());
+    tracing::info!(msg = "Tools list returned", tools = tools.len());
     JsonRpcResponse::ok(
         Value::Null,
         json!({
@@ -447,7 +447,11 @@ fn handle_tools_call(
         }
     };
 
-    tracing::info!(msg="Tool executed", tool=tool_name, success=output.exit_code==0);
+    tracing::info!(
+        msg = "Tool executed",
+        tool = tool_name,
+        success = output.exit_code == 0
+    );
     // 5. Wrap in MCP response format
     JsonRpcResponse::ok(
         req.id.clone(),
@@ -473,7 +477,7 @@ fn handle_resources_list(commands: &mut Command) -> JsonRpcResponse {
     // Pass root name to strip it from resource URIs
     let root_name = &commands.name;
     let resources = commands_to_resources(commands, "", root_name);
-    tracing::info!(msg="Resources list returned", resources=resources.len());
+    tracing::info!(msg = "Resources list returned", resources = resources.len());
     JsonRpcResponse::ok(
         Value::Null,
         json!({
@@ -610,7 +614,12 @@ fn add_configuration_to_options(cfg: &CommandLine) -> HashMap<String, CommandOpt
         ),
         (
             "MCPD_CONFIG_SERVER_HTTPS".to_string(),
-            CommandOptionValue::Bool(cfg.http_tls_key_file.as_ref().map(|_| true).unwrap_or(false)),
+            CommandOptionValue::Bool(
+                cfg.http_tls_key_file
+                    .as_ref()
+                    .map(|_| true)
+                    .unwrap_or(false),
+            ),
         ),
         (
             "MCPD_CONFIG_LOGGING_LEVEL_NAME".to_string(),

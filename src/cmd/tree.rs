@@ -67,7 +67,7 @@ pub struct CommandOptionInfo {
     pub description: String,
     #[serde(default)]
     pub required: bool,
-    #[serde(rename="type", default)]
+    #[serde(rename = "type", default)]
     pub _type: CommandOptionInfoValueType,
     #[serde(default)]
     pub default: Option<CommandOptionValue>,

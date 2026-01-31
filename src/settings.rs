@@ -101,11 +101,7 @@ pub struct CommandLine {
     /// Timeout for dynamically generated HTTP bearer tokens in seconds.
     ///
     /// The default value is 1 week.
-    #[arg(
-        long,
-        default_value = "604800",
-        env = "MCPD_HTTP_AUTH_TOKEN_TIMEOUT"
-    )]
+    #[arg(long, default_value = "604800", env = "MCPD_HTTP_AUTH_TOKEN_TIMEOUT")]
     pub http_auth_token_timeout: usize,
 
     /// Root directory to load command files and directories and their information files.
@@ -235,10 +231,7 @@ fn parse_key_value(s: &str) -> Result<(String, String), String> {
 fn parse_script_root_directory(s: &str) -> Result<PathBuf, String> {
     let path = PathBuf::from(s);
     if !path.exists() {
-        return Err(format!(
-            "Script root directory {:?} does not exist",
-            path
-        ));
+        return Err(format!("Script root directory {:?} does not exist", path));
     }
     if !path.is_dir() {
         return Err(format!(
@@ -297,7 +290,8 @@ impl CommandLine {
             }
             self.http_auth_password_sha256_bcrypt = Some(password);
         } else if let Some(ref mut password) = &mut self.http_auth_password_sha256_bcrypt {
-            *password = utils::hash_bcrypt(utils::to_sha256(password.as_str()).as_str(), 12).unwrap();
+            *password =
+                utils::hash_bcrypt(utils::to_sha256(password.as_str()).as_str(), 12).unwrap();
         }
 
         // Handle username/password validation
@@ -325,7 +319,10 @@ impl CommandLine {
         }
 
         // Handle TLS file validation
-        match (self.http_tls_cert_file.is_some(), self.http_tls_key_file.is_some()) {
+        match (
+            self.http_tls_cert_file.is_some(),
+            self.http_tls_key_file.is_some(),
+        ) {
             (true, false) => {
                 return Err("TLS cert file is set but TLS key file is not set".to_string())
             }
