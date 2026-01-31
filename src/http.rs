@@ -1118,16 +1118,16 @@ fn api_auth_token_handler(
                 .as_secs() as usize
                 + token_timeout;
             tokens.insert(token.clone(), timestamp);
-                make_api_response_with_headers(
-                    Ok(serde_json::json!({ "token": token })),
-                    Some(vec![(
-                        std::borrow::Cow::Borrowed("Set-Cookie"),
-                        std::borrow::Cow::Owned(format!(
-                            "mcpd_token={}; Path=/; Max-Age={}; SameSite=None; Secure;",
-                            token, token_timeout
-                        )),
-                    )]),
-                )
+            make_api_response_with_headers(
+                Ok(serde_json::json!({ "token": token })),
+                Some(vec![(
+                    std::borrow::Cow::Borrowed("Set-Cookie"),
+                    std::borrow::Cow::Owned(format!(
+                        "mcpd_token={}; Path=/; Max-Age={}; SameSite=None; Secure;",
+                        token, token_timeout
+                    )),
+                )]),
+            )
         }
     }
 }
@@ -1178,10 +1178,7 @@ fn extract_token(request: &RequestWrapper) -> Result<String, HTTPAuthenticationE
         for cookie in cookie_header.split(';') {
             let cookie = cookie.trim();
             if cookie.starts_with("mcpd_token=") {
-                return Ok(cookie
-                    .strip_prefix("mcpd_token=")
-                    .unwrap_or("")
-                    .to_string());
+                return Ok(cookie.strip_prefix("mcpd_token=").unwrap_or("").to_string());
             }
         }
     }
@@ -1189,7 +1186,8 @@ fn extract_token(request: &RequestWrapper) -> Result<String, HTTPAuthenticationE
     // Try Authorization header
     if let Some(auth_header) = request.header("Authorization") {
         let parts: Vec<&str> = auth_header.splitn(2, ' ').collect();
-        if parts.len() >= 2 && parts[0] == "Bearer" {
+        if parts.len() >= 2 {
+            // parts[0]: "Bearer" | "api_key" | "token" | etc
             return Ok(parts[1].to_string());
         }
         return Err(HTTPAuthenticationError::InvalidBasicAuthentication {
