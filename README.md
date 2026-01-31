@@ -160,6 +160,8 @@ http://localhost:1995/api/mcp
 | `--debug` | - | `false` | Enable debug level logging (shows target) |
 | `--quiet` | - | `false` | Disable all logging |
 
+
+Use `--help` to see detailed descriptions of all options.
 </details>
 
 ## MCP Endpoint
