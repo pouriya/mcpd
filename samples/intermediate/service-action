@@ -5,9 +5,9 @@
 
 # Handle --help flag to return script metadata
 if [ "$1" = "--help" ]; then
-  echo '{"description": "Simulate service management actions", "state": false}'
+  echo '{"description": "Simulate service management actions"}'
   # Options: service (required string), action (optional enum with default)
-  echo '{"service": {"description": "Name of the service", "required": true, "value_type": "string"}, "action": {"description": "Action to perform", "required": false, "value_type": {"enum": ["start", "stop", "restart", "status"]}, "default_value": "status"}}' >&2
+  echo '{"service": {"description": "Name of the service", "required": true, "type": "string"}, "action": {"description": "Action to perform", "required": false, "type": {"enum": ["start", "stop", "restart", "status"]}, "default": "status"}}' >&2
   exit 0
 fi
 

@@ -9,8 +9,8 @@
 
 # Handle --help flag to return script metadata
 if [ "$1" = "--help" ]; then
-  echo '{"description": "Read contents of a file", "state": false}'
-  echo '{"path": {"description": "Path to the file to read", "required": true, "value_type": "string"}}' >&2
+  echo '{"description": "Read contents of a file"}'
+  echo '{"path": {"description": "Path to the file to read", "required": true, "type": "string"}}' >&2
   exit 0
 fi
 

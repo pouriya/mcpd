@@ -36,27 +36,27 @@ if len(sys.argv) > 1 and sys.argv[1] == "--help":
         "action": {
             "description": "Queue action",
             "required": False,
-            "value_type": {"enum": ["add", "complete", "list", "clear", "next"]},
-            "default_value": "list"
+            "type": {"enum": ["add", "complete", "list", "clear", "next"]},
+            "default": "list"
         },
         "task": {
             "description": "Task description (for add)",
             "required": False,
-            "value_type": "string",
-            "default_value": ""
+            "type": "string",
+            "default": ""
         },
         "priority": {
             "description": "Task priority 1-5 (1=highest)",
             "required": False,
-            "value_type": "integer",
-            "default_value": 3,
+            "type": "integer",
+            "default": 3,
             "size": {"min": 1, "max": 5}  # Constrain to valid range
         },
         "task_id": {
             "description": "Task ID (for complete)",
             "required": False,
-            "value_type": "integer",
-            "default_value": 0
+            "type": "integer",
+            "default": 0
         }
     }), file=sys.stderr)
     sys.exit(0)

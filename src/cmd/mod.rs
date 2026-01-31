@@ -109,12 +109,12 @@ pub fn check_input(command: &Command, input: &CommandInput) -> Result<CommandInp
             let input_value = new_input.options.get(option.as_str()).unwrap();
             check_definition(
                 option,
-                &definition.value_type,
+                &definition._type,
                 input_value,
                 &definition.size,
             )?
-        } else if definition.default_value.is_none() {
-            match definition.value_type {
+        } else if definition.default.is_none() {
+            match definition._type {
                 CommandOptionInfoValueType::Boolean => CommandOptionValue::Bool(false),
                 CommandOptionInfoValueType::Any => CommandOptionValue::None,
                 _ => {
@@ -129,7 +129,7 @@ pub fn check_input(command: &Command, input: &CommandInput) -> Result<CommandInp
                 }
             }
         } else {
-            definition.default_value.clone().unwrap()
+            definition.default.clone().unwrap()
         };
         new_input.options.insert(option.clone(), new_value);
     }

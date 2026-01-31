@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Intermediate Example: Calculator (Python)
 # Demonstrates Python script with multiple options and validation
-# Shows how to use enum value_type for controlled options
+# Shows how to use enum type for controlled options
 
 import sys
 import json
@@ -11,19 +11,18 @@ if len(sys.argv) > 1 and sys.argv[1] == "--help":
     # First line to stdout: script info with version
     print(json.dumps({
         "description": "A simple calculator",
-        "version": "1.0.0",
-        "state": False
+        "version": "1.0.0"
     }))
     # Second line to stderr: options definition
-    # - enum value_type restricts values to a predefined list
+    # - enum type restricts values to a predefined list
     print(json.dumps({
-        "a": {"description": "First operand", "required": True, "value_type": "integer"},
-        "b": {"description": "Second operand", "required": True, "value_type": "integer"},
+        "a": {"description": "First operand", "required": True, "type": "integer"},
+        "b": {"description": "Second operand", "required": True, "type": "integer"},
         "op": {
             "description": "Operation to perform",
             "required": False,
-            "value_type": {"enum": ["add", "subtract", "multiply", "divide"]},
-            "default_value": "add"
+            "type": {"enum": ["add", "subtract", "multiply", "divide"]},
+            "default": "add"
         }
     }), file=sys.stderr)
     sys.exit(0)

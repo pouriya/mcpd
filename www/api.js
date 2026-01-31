@@ -101,7 +101,7 @@ class Api {
         const extraHeaders = {
            'Authorization': 'Basic ' + btoa(username + ':' + hashedPassword),
            'Content-Type': 'application/x-www-form-urlencoded',
-           'X-RESTCOMMANDER-PASSWORD-HASHED': isHashed.toString()
+           'X-MCPD-PASSWORD-HASHED': isHashed.toString()
         }
         var body = ''
         if (captchaId !== undefined && captchaText !== undefined) {

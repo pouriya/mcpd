@@ -138,7 +138,7 @@ fn option_to_json_schema_property(info: &CommandOptionInfo) -> Value {
     let mut prop = json!({});
 
     // Set type and enum
-    match &info.value_type {
+    match &info._type {
         CommandOptionInfoValueType::String => {
             prop["type"] = json!("string");
         }
@@ -164,13 +164,13 @@ fn option_to_json_schema_property(info: &CommandOptionInfo) -> Value {
     }
 
     // Default value
-    if let Some(ref default) = info.default_value {
+    if let Some(ref default) = info.default {
         prop["default"] = command_option_value_to_json(default);
     }
 
     // Size constraints
     if let Some(ref size) = info.size {
-        match info.value_type {
+        match info._type {
             CommandOptionInfoValueType::String => {
                 if let Some(min) = size.min {
                     prop["minLength"] = json!(min);
@@ -357,6 +357,7 @@ fn json_to_command_options(arguments: &Value) -> HashMap<String, CommandOptionVa
 
 // === Request Handlers ===
 fn handle_initialize(_commands: &Command) -> JsonRpcResponse {
+    tracing::info!(msg="Client initialized");
     JsonRpcResponse::ok(
         Value::Null, // Will be replaced with actual id
         json!({
@@ -390,6 +391,7 @@ fn handle_tools_list(commands: &mut Command) -> JsonRpcResponse {
     // Pass root name to strip it from tool paths
     let root_name = &commands.name;
     let tools = commands_to_tools(commands, "", root_name);
+    tracing::info!(msg="Tools list returned", tools=tools.len());
     JsonRpcResponse::ok(
         Value::Null,
         json!({
@@ -445,6 +447,7 @@ fn handle_tools_call(
         }
     };
 
+    tracing::info!(msg="Tool executed", tool=tool_name, success=output.exit_code==0);
     // 5. Wrap in MCP response format
     JsonRpcResponse::ok(
         req.id.clone(),
@@ -470,6 +473,7 @@ fn handle_resources_list(commands: &mut Command) -> JsonRpcResponse {
     // Pass root name to strip it from resource URIs
     let root_name = &commands.name;
     let resources = commands_to_resources(commands, "", root_name);
+    tracing::info!(msg="Resources list returned", resources=resources.len());
     JsonRpcResponse::ok(
         Value::Null,
         json!({

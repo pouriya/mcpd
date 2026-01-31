@@ -67,10 +67,10 @@ pub struct CommandOptionInfo {
     pub description: String,
     #[serde(default)]
     pub required: bool,
+    #[serde(rename="type", default)]
+    pub _type: CommandOptionInfoValueType,
     #[serde(default)]
-    pub value_type: CommandOptionInfoValueType,
-    #[serde(default)]
-    pub default_value: Option<CommandOptionValue>,
+    pub default: Option<CommandOptionValue>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<CommandOptionInfoValueSize>,
 }
@@ -338,11 +338,14 @@ impl Command {
         }
 
         // Parse JSON from stdout
-        let help_json: serde_json::Value =
+        let help_json: serde_json::Value = if output.stdout.trim().is_empty() {
+            serde_json::Value::Object(serde_json::Map::new())
+        } else {
             serde_json::from_str(&output.stdout).map_err(|e| CommandError::InvalidCommandInfo {
                 command: command_filename.clone(),
                 message: format!("could not parse --help stdout as JSON: {}", e),
-            })?;
+            })?
+        };
 
         // Extract fields with defaults
         let title = help_json
@@ -376,7 +379,7 @@ impl Command {
 
         // Validate options structure
         for (option_name, option_info) in &options {
-            if !option_info.required && option_info.default_value.is_none() {
+            if !option_info.required && option_info.default.is_none() {
                 return Err(CommandError::InvalidCommandInfo {
                     command: command_filename.clone(),
                     message: format!(
@@ -385,8 +388,8 @@ impl Command {
                     ),
                 });
             }
-            if let Some(ref default_value) = option_info.default_value {
-                match (&option_info.value_type, default_value) {
+            if let Some(ref default) = option_info.default {
+                match (&option_info._type, default) {
                     (CommandOptionInfoValueType::Any, _) => (),
                     (CommandOptionInfoValueType::Enum(_), CommandOptionValue::String(_)) => (),
                     (CommandOptionInfoValueType::String, CommandOptionValue::String(_)) => (),
@@ -401,17 +404,17 @@ impl Command {
                     }
                 }
             }
-            if let CommandOptionInfoValueType::Enum(ref list) = option_info.value_type {
+            if let CommandOptionInfoValueType::Enum(ref list) = option_info._type {
                 if list.is_empty() {
                     return Err(CommandError::InvalidCommandInfo {
                         command: command_filename.clone(),
                         message: format!(
-                            "value of option '{}' is an accepted_value_list which is empty",
+                            "value of option '{}' is an enum which is empty",
                             option_name
                         ),
                     });
                 }
-                if let Some(CommandOptionValue::String(ref value)) = option_info.default_value {
+                if let Some(CommandOptionValue::String(ref value)) = option_info.default {
                     if !list.contains(value) {
                         return Err(CommandError::InvalidCommandInfo {
                             command: command_filename.clone(),

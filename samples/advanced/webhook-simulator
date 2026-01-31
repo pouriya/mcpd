@@ -12,27 +12,26 @@ if len(sys.argv) > 1 and sys.argv[1] == "--help":
     print(json.dumps({
         "title": "Webhook Simulator",
         "description": "Simulate webhook processing with validation",
-        "version": "1.0.0",
-        "state": False  # No state support needed
+        "version": "1.0.0"
     }))
     # Options including boolean type
     print(json.dumps({
         "event_type": {
             "description": "Type of webhook event",
             "required": True,
-            "value_type": {"enum": ["user.created", "user.updated", "user.deleted", "order.placed", "order.shipped"]}
+            "type": {"enum": ["user.created", "user.updated", "user.deleted", "order.placed", "order.shipped"]}
         },
         "payload": {
             "description": "Event payload (JSON string)",
             "required": False,
-            "value_type": "string",
-            "default_value": "{}"
+            "type": "string",
+            "default": "{}"
         },
         "simulate_error": {
             "description": "Simulate an error response",
             "required": False,
-            "value_type": "boolean",
-            "default_value": False
+            "type": "boolean",
+            "default": False
         }
     }), file=sys.stderr)
     sys.exit(0)

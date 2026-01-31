@@ -6,10 +6,10 @@
 # Handle --help flag to return script metadata
 if [ "$1" = "--help" ]; then
   # First line to stdout: script info
-  echo '{"description": "Greet someone by name", "state": false}'
+  echo '{"description": "Greet someone by name"}'
   # Second line to stderr: options definition
   # - required: true means this option must be provided
-  echo '{"name": {"description": "Name of the person to greet", "required": true, "value_type": "string"}}' >&2
+  echo '{"name": {"description": "Name of the person to greet", "required": true, "type": "string"}}' >&2
   exit 0
 fi
 

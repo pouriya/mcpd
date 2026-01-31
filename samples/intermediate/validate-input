@@ -5,11 +5,11 @@
 
 # Handle --help flag to return script metadata
 if [ "$1" = "--help" ]; then
-  echo '{"description": "Validate user input with constraints", "state": false}'
+  echo '{"description": "Validate user input with constraints"}'
   # Options with size constraints:
   # - string size: min/max character length
   # - integer size: min/max numeric value
-  echo '{"username": {"description": "Username (3-20 chars)", "required": true, "value_type": "string", "size": {"min": 3, "max": 20}}, "age": {"description": "Age (must be 1-120)", "required": true, "value_type": "integer", "size": {"min": 1, "max": 120}}, "score": {"description": "Score (0-100)", "required": false, "value_type": "integer", "default_value": 0, "size": {"min": 0, "max": 100}}}' >&2
+  echo '{"username": {"description": "Username (3-20 chars)", "required": true, "type": "string", "size": {"min": 3, "max": 20}}, "age": {"description": "Age (must be 1-120)", "required": true, "type": "integer", "size": {"min": 1, "max": 120}}, "score": {"description": "Score (0-100)", "required": false, "type": "integer", "default": 0, "size": {"min": 0, "max": 100}}}' >&2
   exit 0
 fi
 

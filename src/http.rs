@@ -1164,7 +1164,7 @@ fn check_authentication(
     tokens: &HashMap<String, usize>,
     cfg: &CommandLine,
 ) -> Result<(), HTTPAuthenticationError> {
-    if cfg.http_auth_password_sha512.is_none() {
+    if cfg.http_auth_password_sha256_bcrypt.is_none() {
         return Ok(());
     }
 
@@ -1207,10 +1207,10 @@ fn authentication_with_basic(
     authorization_value: String,
     form: HashMap<String, String>,
 ) -> Result<(), HTTPAuthenticationError> {
-    if cfg.http_auth_password_sha512.is_none() && cfg.http_auth_username.is_empty() {
+    if cfg.http_auth_password_sha256_bcrypt.is_none() && cfg.http_auth_username.is_empty() {
         return Ok(());
     };
-    if cfg.http_auth_password_sha512.is_none() || cfg.http_auth_username.is_empty() {
+    if cfg.http_auth_password_sha256_bcrypt.is_none() || cfg.http_auth_username.is_empty() {
         return Err(HTTPAuthenticationError::UsernameOrPasswordIsNotSet);
     };
     match authorization_value
@@ -1256,7 +1256,7 @@ fn authentication_with_basic(
 
                         // Verify password using bcrypt
                         let password_hash = cfg
-                            .http_auth_password_sha512
+                            .http_auth_password_sha256_bcrypt
                             .as_ref()
                             .ok_or(HTTPAuthenticationError::UsernameOrPasswordIsNotSet)?;
                         let password_valid = utils::verify_bcrypt(&password_sha256, password_hash)
@@ -1318,7 +1318,7 @@ fn authentication_with_token(
     token: String,
     cfg: &CommandLine,
 ) -> Result<(), HTTPAuthenticationError> {
-    if cfg.http_auth_password_sha512.is_none() {
+    if cfg.http_auth_password_sha256_bcrypt.is_none() {
         return Ok(());
     }
     if token.is_empty() {
@@ -1366,7 +1366,7 @@ fn try_set_password(
 
         // Verify previous password against current password
         let current_password_hash = cfg
-            .http_auth_password_sha512
+            .http_auth_password_sha256_bcrypt
             .as_ref()
             .ok_or(HTTPAPIError::InvalidPreviousPassword)?;
         let previous_password_valid =
@@ -1409,7 +1409,7 @@ fn try_set_password(
             message: reason.to_string(),
         }
     })?;
-    cfg.http_auth_password_sha512 = Some(password_bcrypt);
+    cfg.http_auth_password_sha256_bcrypt = Some(password_bcrypt);
     Ok(make_api_response_ok())
 }
 

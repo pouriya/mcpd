@@ -7,6 +7,7 @@ use std::path::PathBuf;
 use clap::Parser;
 
 use crate::cmd::runner::CommandOptionsValue;
+use crate::utils;
 use tracing_subscriber::filter::LevelFilter;
 
 #[derive(Debug, Clone, Parser)]
@@ -61,26 +62,26 @@ pub struct CommandLine {
     #[arg(long, default_value = "", env = "MCPD_HTTP_AUTH_USERNAME")]
     pub http_auth_username: String,
 
-    /// A file containing sha512 of your user password.
+    /// A file containing bcrypt(password: sha256(plain_password) of your user password.
     ///
     /// By configuring this you are able to change the password in runtime via REST API.
     /// Make sure that mcpd process has appropriate permissions to write to the file.
     /// Empty value means this option should be discarded and if one of `--http-auth-password-file`
-    /// and `--http-auth-password-sha512` is not configured, You can call every REST API endpoint without
+    /// and `--http-auth-password-sha256-bcrypt` is not configured, You can call every REST API endpoint without
     /// authentication.
     #[arg(long, env = "MCPD_HTTP_AUTH_PASSWORD_FILE", value_parser = parse_password_file)]
     pub http_auth_password_file: Option<PathBuf>,
 
-    /// sha512 of you user password.
+    /// bcrypt(password: sha256(plain_password), const: 12) of your user password.
     ///
     /// If `--http-auth-password-file` is configured, this is discarded.
     /// Note that by configuring this, You can not change the password via REST API or in
     /// web dashboard.
     /// Empty value means this option should be discarded and if one of `--http-auth-password-file`
-    /// and `--http-auth-password-sha512` is not configured, You can call every REST API endpoint without
+    /// and `--http-auth-password-sha256-bcrypt` is not configured, You can call every REST API endpoint without
     /// authentication.
-    #[arg(long, env = "MCPD_HTTP_AUTH_PASSWORD_SHA512")]
-    pub http_auth_password_sha512: Option<String>,
+    #[arg(long, env = "MCPD_HTTP_AUTH_PASSWORD_SHA256_BCRYPT")]
+    pub http_auth_password_sha256_bcrypt: Option<String>,
 
     /// Enable/Disable CAPTCHA.
     #[arg(long, env = "MCPD_HTTP_AUTH_CAPTCHA")]
@@ -153,6 +154,11 @@ pub struct CommandLine {
     /// Configuration key/values for www in KEY=VALUE format (can be specified multiple times).
     ///
     /// These are accessible via the `/api/public/configuration` endpoint.
+    /// Supported/Used keys:
+    /// - title: Title of the web dashboard (default: mcpd)
+    /// - banner-title: Title of the web dashboard banner (default: MCP Daemon)
+    /// - banner-text: Text of the web dashboard banner (default: {{title}} exposes your scripts as MCP tools and resources)
+    /// - footer: Footer text (default: Hosted on <a href="https://github.com/pouriya/mcpd" target="_blank"><b>GitHub</b></a>)
     #[arg(long, value_name = "KEY=VALUE", value_parser = parse_key_value)]
     pub www_config: Vec<(String, String)>,
 
@@ -284,22 +290,24 @@ impl CommandLine {
             if password.is_empty() {
                 return Err(format!("Password file {:?} is empty!", password_file));
             }
-            if self.http_auth_password_sha512.is_some() {
+            if self.http_auth_password_sha256_bcrypt.is_some() {
                 tracing::warn!(
                     msg = "Both password and password_file fields are set, ignoring password field",
                 );
             }
-            self.http_auth_password_sha512 = Some(password);
+            self.http_auth_password_sha256_bcrypt = Some(password);
+        } else if let Some(ref mut password) = &mut self.http_auth_password_sha256_bcrypt {
+            *password = utils::hash_bcrypt(utils::to_sha256(password.as_str()).as_str(), 12).unwrap();
         }
 
         // Handle username/password validation
         match (
             !self.http_auth_username.is_empty(),
-            self.http_auth_password_sha512.is_some(),
+            self.http_auth_password_sha256_bcrypt.is_some(),
             self.http_auth_password_file.is_some(),
         ) {
             (true, false, false) => {
-                return Err("Configuration contains `--http-auth-username` but `--http-auth-password-file` or `--http-auth-password-sha512` field is not set".to_string())
+                return Err("Configuration contains `--http-auth-username` but `--http-auth-password-file` or `--http-auth-password-sha256-bcrypt` field is not set".to_string())
             }
             (false, true, _) => {
                 tracing::warn!(

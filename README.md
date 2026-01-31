@@ -29,9 +29,9 @@ cat > scripts/date << 'EOF'
 #!/bin/sh
 if [ "$1" = "--help" ]; then
   # stdout: script metadata
-  echo '{"description": "Get the current date and time with optional format", "state": false}'
+  echo '{"description": "Get the current date and time with optional format"}'
   # stderr: option definitions
-  echo '{"format": {"description": "Date format string (e.g., +%Y-%m-%d)", "required": false, "value_type": "string", "default_value": ""}}' >&2
+  echo '{"format": {"description": "Date format string (e.g., +%Y-%m-%d)", "required": false, "type": "string", "default_value": ""}}' >&2
   exit 0
 fi
 

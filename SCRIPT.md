@@ -19,6 +19,7 @@ When mcpd calls `script --help`, it expects:
   "state": false
 }
 ```
+Also `state` is optional and defaults to `false`.
 
 **stderr**: JSON object with option definitions (can be empty `{}` if no options):
 ```json
@@ -26,8 +27,8 @@ When mcpd calls `script --help`, it expects:
   "option_name": {
     "description": "What this option does",
     "required": true,
-    "value_type": "string",
-    "default_value": "default",
+    "type": "string",
+    "default": "default",
     "size": {
       "min": 1,
       "max": 100
@@ -44,9 +45,9 @@ When mcpd calls `script --help`, it expects:
 #!/bin/bash
 if [ "$1" = "--help" ]; then
   # stdout: script metadata
-  echo '{"description": "Adds two numbers", "state": false}'
+  echo '{"description": "Adds two numbers"}'
   # stderr: option definitions
-  echo '{"a": {"description": "First number", "required": true, "value_type": "integer"}, "b": {"description": "Second number", "required": true, "value_type": "integer"}}' >&2
+  echo '{"a": {"description": "First number", "required": true, "type": "integer"}, "b": {"description": "Second number", "required": true, "type": "integer"}}' >&2
   exit 0
 fi
 # ... rest of script
@@ -90,8 +91,8 @@ Each option in the stderr JSON must follow this structure:
   "option_name": {
     "description": "What this option does",
     "required": true,
-    "value_type": "string",
-    "default_value": "default",
+    "type": "string",
+    "default": "default",
     "size": {
       "min": 1,
       "max": 100
@@ -117,9 +118,9 @@ The `size` field is optional and applies constraints:
 
 ### Default Values
 
-- If `required` is `true`, `default_value` is ignored
-- If `required` is `false`, `default_value` is required
-- Default value type must match `value_type`
+- If `required` is `true`, `default` is ignored
+- If `required` is `false`, `default` is required
+- Default value type must match `type`
 - For enum types, default must be one of the enum values
 
 ## State

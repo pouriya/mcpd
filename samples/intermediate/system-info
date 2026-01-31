@@ -6,9 +6,9 @@
 # Handle --help flag to return script metadata
 if [ "$1" = "--help" ]; then
   # Include version in script info
-  echo '{"description": "Get system information", "version": "1.0.0", "state": false}'
+  echo '{"description": "Get system information", "version": "1.0.0"}'
   # Enum option for detail level
-  echo '{"detail": {"description": "Level of detail", "required": false, "value_type": {"enum": ["basic", "full"]}, "default_value": "basic"}}' >&2
+  echo '{"detail": {"description": "Level of detail", "required": false, "type": {"enum": ["basic", "full"]}, "default": "basic"}}' >&2
   exit 0
 fi
 

@@ -1,0 +1,149 @@
+#!/usr/bin/env python3
+# Advanced Example: Key-Value Store (Python)
+# Demonstrates stateful script with complex state management
+# Shows how to use Python for more complex logic
+
+import sys
+import json
+import os
+import glob
+
+DEFAULT_TOOL_CONTENT = """
+#!/usr/bin/env sh
+# Basic Example: Hello World
+# The simplest possible mcpd script
+# No options, just outputs a greeting
+
+# Handle --help flag to return script metadata
+if [ "$1" = "--help" ]; then
+  # First line to stdout: script info (description, version, state support)
+  echo '{"description": "A simple hello world greeting"}'
+  # Second line to stderr: options definition (empty = no options)
+  echo '{}' >&2
+  exit 0
+fi
+
+# Simple output - can be plain text or JSON
+echo "Hello, World!"
+exit 0
+"""
+
+tool_root_directory = os.environ.get("MCPD_CONFIG_COMMANDS_ROOT_DIRECTORY")
+
+
+def log(record, level="INFO"):
+    print(level+" " +record, file=sys.stderr)
+
+def load_tool_list():
+    log("Loading tools", "DEBUG")
+    path_list = glob.glob(tool_root_directory+"**", recursive=True)
+    tool_list = [tool for tool in path_list if os.path.isfile(tool) and not tool.endswith("mcpd-tool-editor")]
+    sorted(tool_list)
+    log("Loaded "+str(len(tool_list))+" tool(s)")
+    return tool_list
+
+
+if len(sys.argv) > 1 and sys.argv[1] == "--help":
+    print(json.dumps({"description": "MCPD Tool editor", "state": True}))
+    print(
+        json.dumps(
+            {
+                "action": {
+                    "description": "Action to perform",
+                    "required": False,
+                    "type": {"enum": ["Read", "Write", "Remove"]},
+                    "default": "Read"
+                },
+                "tool": {
+                    "description": "Tool to read/write",
+                    "required": True,
+                    "type": "string"
+                },
+                "content": {
+                    "description": "Tool script contents",
+                    "required": False,
+                    "type": "string",
+                    "default": DEFAULT_TOOL_CONTENT
+                }
+            }
+        ),
+        file=sys.stderr
+    )
+    sys.exit(0)
+
+if len(sys.argv) > 1 and sys.argv[1] == "--state":
+    print(json.dumps(load_tool_list()))
+    sys.exit(0)
+
+action = os.environ.get("action", "Read")
+tool = os.path.normpath(os.environ.get("tool", ""))
+if os.path.isabs(tool):
+    print("Absolute path is not supported")
+    sys.exit(3)
+content = os.environ.get("content", "")
+tool = os.path.join(tool_root_directory, tool)
+file_type = "tool" 
+if not os.path.exists():
+    if content.strip() == "":
+        file_type = "directory"
+elif os.path.isdir():
+    file_type = "directory"
+log("Action: "+action+", Tool: "+tool+", Type: "+file_type)
+
+
+if action == "Read":
+    tool_list = load_tool_list()
+    if file_type == "tool":
+        data = ""
+        try:
+            tfd = open(tool)
+            data = tfd.read()
+            tfd.close()
+        except Exception as error:
+            print("Could not read "+file_type+" '"+tool+"': "+ str(error))
+            sys.exit(1)
+        print(json.dumps(data))
+        sys.exit(0)
+    else:
+        print(json.dumps(tool+" is a directory"))
+        sys.exit(0)
+elif action == "Write":
+    if file_type == "tool":
+        if content == "":
+            try:
+                os.remove(tool)
+            except Exception as error:
+                print("Could not remove "+file_type+" '"+tool+"': "+ str(error))
+                sys.exit(1)
+            print("Removed")
+            sys.exit(0)
+        else:
+            try:
+                tfd = open(tool, 'w')
+                tfd.write(content)
+                tfd.close()
+            except Exception as error:
+                print("Could not write to "+file_type+" '"+tool+"': "+ str(error))
+                sys.exit(1)
+            print("Created")
+            sys.exit(0)
+    else:
+        if content == "":
+            try:
+                os.removedirs(tool)
+            except Exception as error:
+                print("Could not remove "+file_type+" '"+tool+"': "+ str(error))
+                sys.exit(1)
+            print("Removed")
+            sys.exit(0)
+        else:
+            try:
+                os.makedirs(tool, exist_ok=True)
+            except Exception as error:
+                print("Could not create "+file_type+" '"+tool+"': "+ str(error))
+                sys.exit(1)
+            print("Created")
+            sys.exit(0)
+
+print("Action is not supported")
+sys.exit(3)

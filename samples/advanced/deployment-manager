@@ -10,7 +10,7 @@ if [ "$1" = "--help" ]; then
   # title: custom display name in the UI
   echo '{"title": "Deployment Manager", "description": "Simulate a deployment workflow with stages", "version": "2.0.0", "state": true}'
   # Multiple options including boolean type
-  echo '{"action": {"description": "Deployment action", "required": false, "value_type": {"enum": ["start", "approve", "rollback", "status", "history"]}, "default_value": "status"}, "environment": {"description": "Target environment", "required": false, "value_type": {"enum": ["dev", "staging", "production"]}, "default_value": "dev"}, "version": {"description": "Version to deploy", "required": false, "value_type": "string", "default_value": "latest"}, "force": {"description": "Force deployment without approval", "required": false, "value_type": "boolean", "default_value": false}}' >&2
+  echo '{"action": {"description": "Deployment action", "required": false, "type": {"enum": ["start", "approve", "rollback", "status", "history"]}, "default": "status"}, "environment": {"description": "Target environment", "required": false, "type": {"enum": ["dev", "staging", "production"]}, "default": "dev"}, "version": {"description": "Version to deploy", "required": false, "type": "string", "default": "latest"}, "force": {"description": "Force deployment without approval", "required": false, "type": "boolean", "default": false}}' >&2
   exit 0
 fi
 

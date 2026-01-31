@@ -9,7 +9,7 @@ STATE_FILE="/tmp/mcpd_counter.json"
 if [ "$1" = "--help" ]; then
   # state: true enables the --state flag support
   echo '{"description": "A stateful counter that persists across calls", "version": "1.0.0", "state": true}'
-  echo '{"action": {"description": "Action to perform", "required": false, "value_type": {"enum": ["increment", "decrement", "reset", "set"]}, "default_value": "increment"}, "value": {"description": "Value for set action", "required": false, "value_type": "integer", "default_value": 1}}' >&2
+  echo '{"action": {"description": "Action to perform", "required": false, "type": {"enum": ["increment", "decrement", "reset", "set"]}, "default": "increment"}, "value": {"description": "Value for set action", "required": false, "type": "integer", "default": 1}}' >&2
   exit 0
 fi
 

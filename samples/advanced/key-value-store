@@ -31,25 +31,25 @@ if len(sys.argv) > 1 and sys.argv[1] == "--help":
         "state": True  # Enable --state support
     }))
     # Second line to stderr: options definition
-    # value_type: "any" accepts any JSON value
+    # type: "any" accepts any JSON value
     print(json.dumps({
         "action": {
             "description": "Action to perform",
             "required": False,
-            "value_type": {"enum": ["get", "set", "delete", "list", "clear"]},
-            "default_value": "list"
+            "type": {"enum": ["get", "set", "delete", "list", "clear"]},
+            "default": "list"
         },
         "key": {
             "description": "Key name",
             "required": False,
-            "value_type": "string",
-            "default_value": ""
+            "type": "string",
+            "default": ""
         },
         "value": {
             "description": "Value to store (for set action)",
             "required": False,
-            "value_type": "any",
-            "default_value": ""
+            "type": "any",
+            "default": ""
         }
     }), file=sys.stderr)
     sys.exit(0)

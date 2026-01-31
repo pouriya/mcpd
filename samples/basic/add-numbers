@@ -6,11 +6,11 @@
 # Handle --help flag to return script metadata
 if [ "$1" = "--help" ]; then
   # First line to stdout: script info
-  echo '{"description": "Add two numbers together", "state": false}'
+  echo '{"description": "Add two numbers together"}'
   # Second line to stderr: options definition
-  # - value_type: "integer" for whole numbers
+  # - type: "integer" for whole numbers
   # - Both options are required
-  echo '{"a": {"description": "First number", "required": true, "value_type": "integer"}, "b": {"description": "Second number", "required": true, "value_type": "integer"}}' >&2
+  echo '{"a": {"description": "First number", "required": true, "type": "integer"}, "b": {"description": "Second number", "required": true, "type": "integer"}}' >&2
   exit 0
 fi
 
