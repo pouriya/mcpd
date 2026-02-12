@@ -16,6 +16,19 @@ mcpd is a ~3MB executable that includes:
 - **Authentication**: Optional username/password, bearer tokens, and CAPTCHA support
 - **Cross-platform**: Single binary for Linux, macOS, and Windows
 
+## Download
+
+Latest builds (single binary, no install):
+
+| Platform | Download |
+|----------|----------|
+| **macOS** (Apple Silicon) | [mcpd-aarch64-apple-darwin](https://github.com/pouriya/mcpd/releases/latest/download/mcpd-aarch64-apple-darwin) |
+| **Linux** (x86_64, musl) | [mcpd-x86_64-unknown-linux-musl](https://github.com/pouriya/mcpd/releases/latest/download/mcpd-x86_64-unknown-linux-musl) |
+| **Windows** (x86_64) | [mcpd-x86_64-pc-windows-msvc.exe](https://github.com/pouriya/mcpd/releases/latest/download/mcpd-x86_64-pc-windows-msvc.exe) |
+| **Docker** | [ghcr.io/pouriya/mcpd](https://ghcr.io/pouriya/mcpd) — `docker pull ghcr.io/pouriya/mcpd:latest` |
+
+After download: make the file executable on macOS/Linux (`chmod +x mcpd-...`). 
+
 ## Quick Start
 
 ### Using Docker
