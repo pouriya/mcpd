@@ -11,7 +11,7 @@ use crate::utils;
 use tracing_subscriber::filter::LevelFilter;
 
 #[derive(Debug, Clone, Parser)]
-#[command(about)]
+#[command(about, version, author)]
 pub struct CommandLine {
     /// HTTP server listen address.
     #[arg(long, default_value = "127.0.0.1", env = "MCPD_HTTP_HOST", value_parser = parse_ip_addr)]
