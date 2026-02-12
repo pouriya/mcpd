@@ -1,6 +1,7 @@
-TARGET=$(shell rustc -vV | awk '$$1 == "host:"{print $$2}')
+TARGET ?= $(shell rustc -vV | awk '$$1 == "host:"{print $$2}')
 BUILD_DIR=$(CURDIR)/build
-RELEASE_FILENAME_POSTFIX=
+BINARY_NAME := $(if $(findstring windows,$(TARGET)),mcpd.exe,mcpd)
+RELEASE_FILENAME_POSTFIX := $(if $(findstring windows,$(TARGET)),.exe,)
 DEV_CMD=${BUILD_DIR}/mcpd-${VERSION}-${TARGET}-dev${RELEASE_FILENAME_POSTFIX}
 RELEASE_CMD=${BUILD_DIR}/mcpd-${VERSION}-${TARGET}${RELEASE_FILENAME_POSTFIX}
 DEV_DIR=$(CURDIR)/_build
@@ -16,7 +17,7 @@ all: release
 release: download-bootstrap
 	@ rm -rf ${BUILD_DIR}/mcpd-* || true
 	cargo build --release --target ${TARGET}
-	@ mkdir -p ${BUILD_DIR} && cp ./target/${TARGET}/release/mcpd ${RELEASE_CMD}
+	@ mkdir -p ${BUILD_DIR} && cp ./target/${TARGET}/release/$(BINARY_NAME) ${RELEASE_CMD}
 	@ ls -sh ${BUILD_DIR}/mcpd*
 
 deb:
@@ -30,7 +31,7 @@ docker:
 dev: download-bootstrap
 	rm -rf ${BUILD_DIR}/mcpd-*-dev* || true
 	cargo build --target ${TARGET}
-	@ mkdir -p ${BUILD_DIR} && cp ./target/${TARGET}/debug/mcpd ${DEV_CMD}
+	@ mkdir -p ${BUILD_DIR} && cp ./target/${TARGET}/debug/$(BINARY_NAME) ${DEV_CMD}
 	@ ls -sh ${BUILD_DIR}/mcpd-*-dev*
 
 setup-dev: dev
