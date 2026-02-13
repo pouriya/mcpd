@@ -208,7 +208,6 @@ Besides the MCP endpoint, mcpd provides:
 - `GET /api/auth/test` - Test authentication
 - `POST /api/auth/token` - Get authentication token
 - `POST /api/setPassword` - Change password (requires password file)
-- `GET /static/*` - Serve static files (web dashboard)
 
 ## License
 
